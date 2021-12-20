@@ -1,0 +1,39 @@
+﻿@page "/datagrid"
+@using DevExpApp.Data
+@implements IDisposable
+
+@inject WeatherForecastService ForecastService
+
+    <h2>DevExpress Data Grid</h2>
+
+    <p class="pb-2 pt-2">The DevExpress Data Grid for Blazor allows you to display and manage data via a tabular (rows/columns) UI metaphor. 
+    This page uses our Blazor Data Grid component to display weather forecast values.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <DxDataGrid Data="@forecasts" @ref="rGrid">
+        <DxDataGridDateEditColumn Caption="Date" Field="Date" />
+        <DxDataGridColumn Caption="Temperature" Field="TemperatureF" />
+    </DxDataGrid>
+
+}
+
+@code {
+    private WeatherForecast[] forecasts;
+    private DxDataGrid<WeatherForecast> rGrid { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+    }
+
+    public void Dispose()
+    {
+       
+    }
+}

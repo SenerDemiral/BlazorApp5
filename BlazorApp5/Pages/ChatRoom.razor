@@ -1,0 +1,56 @@
+﻿@page "/chatroom"
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.SignalR.Client;
+@implements IAsyncDisposable
+
+<h3>ChatRoom</h3>
+<p>@IsConnected</p>
+@if (UserList != null)
+{
+    @foreach (var item in UserList)
+    {
+        <div>@item</div>
+    }
+}
+@code {
+    HubConnection hubConnection;
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    private List<string> UserList;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var aaa = NavigationManager.ToAbsoluteUri("/chathub");
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .Build();
+
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+                {
+                    var encodedMsg = $"{user}: {message}";
+                    InvokeAsync(() => StateHasChanged());
+                });
+
+        hubConnection.On<List<string>>("ReceiveInitializeUserList", (list) =>
+                {
+                    UserList = list;
+                    InvokeAsync(StateHasChanged);
+                    //InvokeAsync(() => StateHasChanged());
+                });
+
+        await hubConnection.StartAsync();
+        var bbb = hubConnection.ConnectionId;   // Baglanamaz ise CoonnectionId=null, State=Disconnected (enum HubConnectionState)
+
+        await hubConnection.InvokeAsync("InitializeUserList", "abcde");
+        //await hubConnection.SendAsync("InitializeUserList");
+        await hubConnection.SendAsync("SendMessage", "sener", "merhaba");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await hubConnection.DisposeAsync();
+    }
+}

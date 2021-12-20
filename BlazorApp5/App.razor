@@ -1,0 +1,109 @@
+﻿@inject LoginService LoginService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.SignalR.Client;
+@implements IAsyncDisposable
+
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code {
+    HubConnection hubConnection;
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var aaa = NavigationManager.ToAbsoluteUri("/chathub");
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .Build();
+
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+                {
+                    var encodedMsg = $"{user}: {message}";
+                    InvokeAsync(() => StateHasChanged());
+                });
+        await hubConnection.StartAsync();
+        var bbb = hubConnection.ConnectionId;   // Baglanamaz ise CoonnectionId=null, State=Disconnected (enum HubConnectionState)
+
+        await hubConnection.InvokeAsync("InitializeUserList", "ssss");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await hubConnection.DisposeAsync();
+    }
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        Console.WriteLine("\nApp.SetParametersAsync..bgn");
+        await LoginService.GetLoginStateAsync();
+        await base.SetParametersAsync(parameters);
+        Console.WriteLine("App.SetParametersAsync..end");
+        /*
+        //await Task.Delay(TimeSpan.FromSeconds(3));
+        ProtectedBrowserStorageResult<string> toto = default;
+        try
+        {
+            toto = await ProtectedLocalStorage.GetAsync<string>("kort");
+            if (!toto.Success)
+                await ProtectedLocalStorage.SetAsync("kort", "SENER");
+            else
+                StateContainer.Property = toto.Value;
+
+            Console.WriteLine("toto.Value: " + toto.Value);
+            await base.SetParametersAsync(parameters);
+        }
+        catch
+        {
+            Console.WriteLine("App.SetParametersAsync..Catch");
+        }
+        finally
+        {
+            //await base.SetParametersAsync(parameters);
+
+            Console.WriteLine("App.SetParametersAsync..end");
+        }*/
+    }
+
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    Console.WriteLine("App.OnParametersSetAsync..bgn");
+    //    await base.OnParametersSetAsync();
+    //    Console.WriteLine("App.OnParametersSetAsync..end");
+    //}
+
+    //protected override void OnInitialized()
+    //{
+    //    Console.WriteLine("App.OnInitialized..Bgn");
+    //    base.OnInitialized();
+    //    Console.WriteLine("App.OnInitialized..End");
+    //}
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    // Do not use ServerPrerender, o zaman buraya 2 kere geliyor
+    //    // OnAfterRenderAsync kullanma. awaitible oldugu icin orayi gecip baska birsey yapabiliyor. SagClick ile yeni tab actiginda
+    //    Console.WriteLine("App.OnInitializedAsync..bgn");
+    //    await base.OnInitializedAsync();
+    //    Console.WriteLine("App.OnInitializedAsync..end");
+    //}
+
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    Console.WriteLine("App.OnAfterRenderAsync..bgn " + firstRender);
+    //    await base.OnAfterRenderAsync(firstRender);
+    //    Console.WriteLine("App.OnAfterRenderAsync..end " + firstRender);
+    //}
+}

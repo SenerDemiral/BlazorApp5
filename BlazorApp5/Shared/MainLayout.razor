@@ -1,0 +1,55 @@
+﻿@inherits LayoutComponentBase
+@implements IDisposable
+@inject StateContainer StateContainer
+
+<PageTitle>BlazorApp5</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">ABOUT</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+
+@code{
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        Console.WriteLine("\nMainLayout.SetParametersAsync..bgn");
+        await base.SetParametersAsync(parameters);
+        Console.WriteLine("MainLayout.SetParametersAsync..end");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+            Console.WriteLine("MainLayout.OnInitializedAsync..bgn");
+            await base.OnInitializedAsync();
+            Console.WriteLine("MainLayout.OnInitializedAsync..end");
+    }
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("MainLayout.OnInitialized");
+        StateContainer.OnChange += StateHasChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+       Console.WriteLine("MainLayout.OnAfterRenderAsync..bgn" + firstRender);
+       await base.OnAfterRenderAsync(firstRender);
+       Console.WriteLine("MainLayout.OnAfterRenderAsync..end" + firstRender);
+
+    }
+    public void Dispose()
+    {
+        StateContainer.OnChange -= StateHasChanged;
+    }
+}

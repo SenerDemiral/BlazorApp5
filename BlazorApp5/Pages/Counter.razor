@@ -1,0 +1,39 @@
+﻿@page "/counter"
+
+@implements IDisposable
+@inject StateContainer StateContainer
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+@if (StateContainer.UsrId != 0)
+{
+<p role="status">Current count: @currentCount</p>
+
+    <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+}
+else
+{
+    <p>Not LoggedIn</p>
+}
+
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+     protected override void OnInitialized()
+    {
+        StateContainer.OnChangeUser += StateHasChanged;
+    }
+    
+    public void Dispose()
+    {
+        StateContainer.OnChangeUser -= StateHasChanged;
+    }
+}
