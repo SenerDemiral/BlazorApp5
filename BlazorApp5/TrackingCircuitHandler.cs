@@ -3,11 +3,17 @@
 public class TrackingCircuitHandler : CircuitHandler
 {
     private HashSet<Circuit> circuits = new();
+    public event EventHandler CircuitsChanged;
 
+    protected virtual void OnCircuitsChanged() => CircuitsChanged?.Invoke(this, EventArgs.Empty);
+    public int ConnectedCircuits => circuits.Count;
+    
     public override Task OnConnectionUpAsync(Circuit circuit,
         CancellationToken cancellationToken)
     {
         circuits.Add(circuit);
+        OnCircuitsChanged();
+
         return base.OnConnectionUpAsync(circuit, cancellationToken);
         //return Task.CompletedTask;
     }
@@ -16,11 +22,11 @@ public class TrackingCircuitHandler : CircuitHandler
         CancellationToken cancellationToken)
     {
         circuits.Remove(circuit);
+        OnCircuitsChanged();
 
         return base.OnConnectionDownAsync(circuit, cancellationToken);
         //return Task.CompletedTask;
     }
 
-    public int ConnectedCircuits => circuits.Count;
 }
 

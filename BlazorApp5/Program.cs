@@ -13,9 +13,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddSingleton<CircuitHandler, TrackingCircuitHandler>();
 //builder.Services.AddSingleton<CircuitHandler>(sp => new TrackingCircuitHandler());
-//builder.Services.AddSingleton<TrackingCircuitHandler>();
 
-builder.Services.AddSingleton<SingletonState>();
 builder.Services.AddScoped<StateContainer>();
 builder.Services.AddScoped<BlazorApp5.LoginService>();
 builder.Services.AddSignalR();

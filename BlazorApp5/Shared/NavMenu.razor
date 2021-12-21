@@ -2,9 +2,12 @@
 @inject StateContainer StateContainer
 @inject LoginService LoginService
 
+@using Microsoft.AspNetCore.Components.Server.Circuits
+@inject CircuitHandler circuitHandler
+
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorApp5</a>
+        <a class="navbar-brand" href="">BlazorApp5  </a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -38,19 +41,25 @@
         @if (StateContainer.UsrId == 0)
         {
             <div class="nav-item px-3">
-                <NavLink class="nav-link"  href="#" @onclick="LoginUser">
+                <NavLink class="nav-link" href="#" @onclick="LoginUser">
                     <span class="oi oi-account-login" aria-hidden="true"></span> Login
-                </NavLink>            
+                </NavLink>
             </div>
         }
         else
         {
             <div class="nav-item px-3">
-                <NavLink class="nav-link"  href="#" @onclick="LoginService.LogoutAsync">
+                <NavLink class="nav-link" href="#" @onclick="LoginService.LogoutAsync">
                     <span class="oi oi-account-logout" aria-hidden="true"></span>@StateContainer.UsrName
-                </NavLink>            
+                </NavLink>
             </div>
         }
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link">
+                Aktif: @((circuitHandler as TrackingCircuitHandler)?.ConnectedCircuits)
+            </NavLink>
+        </div>
     </nav>
 </div>
 
@@ -65,12 +74,12 @@
     }
 }
 
-@code{
-    
+@code {
+
     private async Task LoginUser()
     {
         //myAppState.setUsr(0, "");
-       
+
         //await ProtectedLocalStorage.SetAsync("kort", "SENER");
         //StateContainer.Property = "SENER";
 
@@ -93,10 +102,19 @@
     protected override void OnInitialized()
     {
         StateContainer.OnChangeUser += StateHasChanged;
+        //StateContainer.OnChangeUser += HandleCircuitsChanged;
+        (circuitHandler as TrackingCircuitHandler).CircuitsChanged += HandleCircuitsChanged;
     }
     
+    public void HandleCircuitsChanged(object sender, EventArgs args)
+    {
+        // notify the component that its state has changed
+        // Important: You must use InvokeAsync
+        InvokeAsync(() => StateHasChanged());
+    }
     public void Dispose()
     {
         StateContainer.OnChangeUser -= StateHasChanged;
+        (circuitHandler as TrackingCircuitHandler).CircuitsChanged -= HandleCircuitsChanged;
     }
 }

@@ -4,21 +4,11 @@
 @inject StateContainer StateContainer
 @inject LoginService LoginService
 
-@inject SingletonState SingletonState
-@*@inject TrackingCircuitHandler TrackingCircuitHandler*@
-
-@using Microsoft.AspNetCore.Components.Server.Circuits
-@inject CircuitHandler circuitHandler
-
 <PageTitle>Index</PageTitle>
-
-<p>Number of Circuits: @((circuitHandler as TrackingCircuitHandler).ConnectedCircuits) </p>
-@*<h2>@TrackingCircuitHandler.ConnectedCircuits</h2>
-*@
 
 <h1>Hello, world! @StateContainer.UsrName </h1>
 
-Welcome to your new app. @SingletonState.NofUsr
+Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
@@ -70,9 +60,7 @@ Welcome to your new app. @SingletonState.NofUsr
 
     protected override void OnInitialized()
     {
-        SingletonState.incNofUsr();
         StateContainer.OnChangeUser += StateHasChanged;
-        SingletonState.OnChange += ChangeState;
     }
     protected async void ChangeState()
     {
@@ -87,6 +75,5 @@ Welcome to your new app. @SingletonState.NofUsr
     public void Dispose()
     {
         StateContainer.OnChangeUser -= StateHasChanged;
-        SingletonState.OnChange -= ChangeState;
     }
 }

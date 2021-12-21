@@ -9,7 +9,6 @@ namespace BlazorApp5
     {
         private readonly ProtectedLocalStorage _protectedLocalStorage;
         private readonly StateContainer _stateContainer;
-        private readonly SingletonState _singletonState;
         private readonly NavigationManager _navigationManager;
         private readonly CircuitHandler _circuitHandler;
 
@@ -17,13 +16,11 @@ namespace BlazorApp5
             ProtectedLocalStorage protectedLocalStorage,
             StateContainer stateContainer,
             NavigationManager navigationManager,
-            SingletonState singletonState,
             CircuitHandler circuitHandler)
         {
             _protectedLocalStorage = protectedLocalStorage;
             _stateContainer = stateContainer;
             _navigationManager = navigationManager;
-            _singletonState = singletonState;
             _circuitHandler = circuitHandler;
         }
 
