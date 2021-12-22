@@ -7,10 +7,30 @@ namespace BlazorApp5.Hubs
         private readonly static ConnectionMapping<string> _connections = new ConnectionMapping<string>();
 
         // Clients can call methods that are defined as public
-        public Task SendMessage(string user, string message)
+        public async Task<string> Deneme(string user, string message)
         {
-            return Clients.All.SendAsync("ReceiveMessage", user, message);
+            var aaa = user + message;
+            return aaa;
+            //await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "SERVER", "PONG");
+            //return Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "SERVER", "PONG");
+            //return Clients.All.SendAsync("ReceiveMessage", user, message);
         }
+
+        public async Task SendMessage(string user, string message)
+        {
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "SERVER", "PONG");
+            //return Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "SERVER", "PONG");
+            //return Clients.All.SendAsync("ReceiveMessage", user, message);
+        }
+
+        public async Task<IEnumerable<string>> IamHere(string usrName)
+        {
+            //_connections.Add(usrName, Context.ConnectionId);
+            _connections.Add(Context.ConnectionId, Context.ConnectionId);
+            var list = _connections.GetUsers();
+            return list;
+        }
+
         public async Task InitializeUserList(string usrName)
         {
             //_connections.Add(usrName, Context.ConnectionId);
@@ -26,7 +46,7 @@ namespace BlazorApp5.Hubs
 
         public override Task OnConnectedAsync()
         {
-            Console.WriteLine($"{Context.ConnectionId} connected");
+            Console.WriteLine($"ChatHub {Context.ConnectionId} connected");
             return base.OnConnectedAsync();
         }
 

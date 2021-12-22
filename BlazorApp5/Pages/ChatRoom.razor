@@ -1,6 +1,6 @@
 ﻿@page "/chatroom"
 @inject NavigationManager NavigationManager
-@using Microsoft.AspNetCore.SignalR.Client;
+@inject HubConnection hubConnection
 @implements IAsyncDisposable
 
 <h3>ChatRoom</h3>
@@ -12,25 +12,27 @@
         <div>@item</div>
     }
 }
+<p>@encodedMsg</p>
 @code {
-    HubConnection hubConnection;
+    //HubConnection hubConnection;
     public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+    public string encodedMsg;
 
     private List<string> UserList;
 
 
     protected override async Task OnInitializedAsync()
     {
-        var aaa = NavigationManager.ToAbsoluteUri("/chathub");
+        //var aaa = NavigationManager.ToAbsoluteUri("/chathub");
 
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
-            .Build();
+        //hubConnection = new HubConnectionBuilder()
+        //    .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+        //    .Build();
 
 
         hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
                 {
-                    var encodedMsg = $"{user}: {message}";
+                    encodedMsg = $"{user}: {message} {hubConnection.ConnectionId}";
                     InvokeAsync(() => StateHasChanged());
                 });
 
@@ -38,15 +40,18 @@
                 {
                     UserList = list;
                     InvokeAsync(StateHasChanged);
-                    //InvokeAsync(() => StateHasChanged());
-                });
+                //InvokeAsync(() => StateHasChanged());
+            });
 
-        await hubConnection.StartAsync();
+        //await hubConnection.StartAsync(); // App da basladi
         var bbb = hubConnection.ConnectionId;   // Baglanamaz ise CoonnectionId=null, State=Disconnected (enum HubConnectionState)
 
         await hubConnection.InvokeAsync("InitializeUserList", "abcde");
         //await hubConnection.SendAsync("InitializeUserList");
         await hubConnection.SendAsync("SendMessage", "sener", "merhaba");
+
+        var ccc = await hubConnection.InvokeAsync<string>("Deneme", "AA", "BB");
+        var ddd = await hubConnection.InvokeAsync<List<string>>("IamHere", "CCC");
     }
 
     public async ValueTask DisposeAsync()

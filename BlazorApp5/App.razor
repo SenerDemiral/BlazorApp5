@@ -1,7 +1,6 @@
 ﻿@inject LoginService LoginService
 @inject NavigationManager NavigationManager
-@using Microsoft.AspNetCore.SignalR.Client;
-@implements IAsyncDisposable
+@inject HubConnection HubConnection
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
@@ -17,40 +16,15 @@
 </Router>
 
 @code {
-    HubConnection hubConnection;
-    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var aaa = NavigationManager.ToAbsoluteUri("/chathub");
-
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
-            .Build();
-
-
-        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
-                {
-                    var encodedMsg = $"{user}: {message}";
-                    InvokeAsync(() => StateHasChanged());
-                });
-        await hubConnection.StartAsync();
-        var bbb = hubConnection.ConnectionId;   // Baglanamaz ise CoonnectionId=null, State=Disconnected (enum HubConnectionState)
-
-        await hubConnection.InvokeAsync("InitializeUserList", "ssss");
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await hubConnection.DisposeAsync();
-    }
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
         Console.WriteLine("\nApp.SetParametersAsync..bgn");
         await LoginService.GetLoginStateAsync();
+        await HubConnection.StartAsync();
         await base.SetParametersAsync(parameters);
         Console.WriteLine("App.SetParametersAsync..end");
+
         /*
         //await Task.Delay(TimeSpan.FromSeconds(3));
         ProtectedBrowserStorageResult<string> toto = default;

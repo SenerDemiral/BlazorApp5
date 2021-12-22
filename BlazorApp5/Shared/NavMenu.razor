@@ -57,7 +57,7 @@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link">
-                Aktif: @((circuitHandler as TrackingCircuitHandler)?.ConnectedCircuits)
+                Connected Circuits: @((circuitHandler as TrackingCircuitHandler)?.ConnectedCircuits)
             </NavLink>
         </div>
     </nav>
@@ -101,12 +101,14 @@
 
     protected override void OnInitialized()
     {
-        StateContainer.OnChangeUser += StateHasChanged;
+        //StateContainer.OnChangeUser += StateHasChanged;
+        StateContainer.OnChangeUser += RefreshChanged;
         //StateContainer.OnChangeUser += HandleCircuitsChanged;
-        (circuitHandler as TrackingCircuitHandler).CircuitsChanged += HandleCircuitsChanged;
+        //(circuitHandler as TrackingCircuitHandler).CircuitsChanged += HandleCircuitsChanged;
+        (circuitHandler as TrackingCircuitHandler).CircuitsChanged += RefreshChanged;
     }
     
-    public void HandleCircuitsChanged(object sender, EventArgs args)
+    public void HandleCircuitsChanged(object sender, string args)
     {
         // notify the component that its state has changed
         // Important: You must use InvokeAsync
@@ -114,7 +116,17 @@
     }
     public void Dispose()
     {
-        StateContainer.OnChangeUser -= StateHasChanged;
-        (circuitHandler as TrackingCircuitHandler).CircuitsChanged -= HandleCircuitsChanged;
+        //StateContainer.OnChangeUser -= StateHasChanged;
+        StateContainer.OnChangeUser -= RefreshChanged;
+        //(circuitHandler as TrackingCircuitHandler).CircuitsChanged -= HandleCircuitsChanged;
+        (circuitHandler as TrackingCircuitHandler).CircuitsChanged -= RefreshChanged;
+    }
+
+
+    public void RefreshChanged()
+    {
+        // notify the component that its state has changed
+        // Important: You must use InvokeAsync
+        InvokeAsync(() => StateHasChanged());
     }
 }

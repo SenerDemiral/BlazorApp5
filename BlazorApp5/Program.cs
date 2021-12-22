@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using BlazorApp5.Hubs;
+using Microsoft.AspNetCore.SignalR.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,14 @@ builder.Services.AddSingleton<CircuitHandler, TrackingCircuitHandler>();
 builder.Services.AddScoped<StateContainer>();
 builder.Services.AddScoped<BlazorApp5.LoginService>();
 builder.Services.AddSignalR();
+
+builder.Services.AddScoped<HubConnection>(sp => {
+    var navigationManager = sp.GetRequiredService<NavigationManager>();
+    return new HubConnectionBuilder()
+      .WithUrl(navigationManager.ToAbsoluteUri("/chathub"))
+      .WithAutomaticReconnect()
+      .Build();
+});
 
 var app = builder.Build();
 
