@@ -6,14 +6,13 @@ public class TrackingCircuitHandler : CircuitHandler
     //public event EventHandler CircuitsChanged;
     //public event EventHandler<string> CircuitsChanged;
     public Action? CircuitsChanged;
-
+    
     //protected virtual void OnCircuitsChanged() => CircuitsChanged?.Invoke(this, EventArgs.Empty);
     //protected virtual void OnCircuitsChanged(string id) => CircuitsChanged?.Invoke(this, id);
     protected virtual void OnCircuitsChanged() => CircuitsChanged?.Invoke();
     public int ConnectedCircuits => circuits.Count;
 
-    public override Task OnConnectionUpAsync(Circuit circuit,
-        CancellationToken cancellationToken)
+    public override Task OnConnectionUpAsync(Circuit circuit, CancellationToken cancellationToken)
     {
         circuits.Add(circuit);
         OnCircuitsChanged();
@@ -24,8 +23,7 @@ public class TrackingCircuitHandler : CircuitHandler
         //return Task.CompletedTask;
     }
 
-    public override Task OnConnectionDownAsync(Circuit circuit,
-        CancellationToken cancellationToken)
+    public override Task OnConnectionDownAsync(Circuit circuit, CancellationToken cancellationToken)
     {
         circuits.Remove(circuit);
         OnCircuitsChanged();

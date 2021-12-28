@@ -1,28 +1,47 @@
-﻿@inject LoginService LoginService
+﻿@implements IAsyncDisposable
+@inject LoginService LoginService
 @inject NavigationManager NavigationManager
 @inject HubConnection HubConnection
 
-<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+<CascadingValue Value="this">
+
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingValue>
 
 @code {
+    public string parentCascadeParameter1 = "CAN";
+
+    public async ValueTask DisposeAsync()
+    {
+        await HubConnection.DisposeAsync();
+    }
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
+        // always call first
+        parameters.SetParameterProperties(this);
+
         Console.WriteLine("\nApp.SetParametersAsync..bgn");
         await LoginService.GetLoginStateAsync();
         await HubConnection.StartAsync();
-        await base.SetParametersAsync(parameters);
+        // Login parametrelerini gonderebilirsin ChatRoom daki gibi
+        parentCascadeParameter1 = DateTime.Now.ToString();
+        
+        //await base.SetParametersAsync(parameters);
+         // pass an empty ParameterView, not parameters
+        await base.SetParametersAsync(ParameterView.Empty);
+        
         Console.WriteLine("App.SetParametersAsync..end");
 
         /*
@@ -58,12 +77,12 @@
     //    Console.WriteLine("App.OnParametersSetAsync..end");
     //}
 
-    //protected override void OnInitialized()
-    //{
-    //    Console.WriteLine("App.OnInitialized..Bgn");
-    //    base.OnInitialized();
-    //    Console.WriteLine("App.OnInitialized..End");
-    //}
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("App.OnInitialized..Bgn");
+        base.OnInitialized();
+        Console.WriteLine("App.OnInitialized..End");
+    }
 
     //protected override async Task OnInitializedAsync()
     //{

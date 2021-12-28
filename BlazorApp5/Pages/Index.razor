@@ -9,6 +9,7 @@
 <h1>Hello, world! @StateContainer.UsrName </h1>
 
 Welcome to your new app.
+<h2>@app.parentCascadeParameter1</h2>
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
@@ -37,6 +38,11 @@ Welcome to your new app.
 </style>
 
 @code{
+    //[CascadingParameter(Name = "CascadeParam1")]
+    //protected string? ChildCascadeParameter1 { get; set; }
+        [CascadingParameter]
+    protected App app { get; set; }
+
     private LoginModel LoginModel { get; set; } = new();
 
     private async Task TryLogin()

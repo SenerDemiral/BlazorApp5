@@ -17,14 +17,19 @@ else
 {
     <p>Not LoggedIn</p>
 }
+<h2>@app.parentCascadeParameter1</h2>
 
 
 @code {
+    [CascadingParameter]
+    protected App app { get; set; }
+
     private int currentCount = 0;
 
     private void IncrementCount()
     {
         currentCount++;
+        app.parentCascadeParameter1 = currentCount.ToString();
     }
 
      protected override void OnInitialized()

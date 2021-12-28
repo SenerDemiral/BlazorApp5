@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using BlazorApp5.Hubs;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +13,19 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
+//builder.Services.AddSingleton<TrackingCircuitHandler>();
 builder.Services.AddSingleton<CircuitHandler, TrackingCircuitHandler>();
 //builder.Services.AddSingleton<CircuitHandler>(sp => new TrackingCircuitHandler());
 
 builder.Services.AddScoped<StateContainer>();
 builder.Services.AddScoped<BlazorApp5.LoginService>();
+
 builder.Services.AddSignalR();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 
 builder.Services.AddScoped<HubConnection>(sp => {
     var navigationManager = sp.GetRequiredService<NavigationManager>();
@@ -28,6 +36,8 @@ builder.Services.AddScoped<HubConnection>(sp => {
 });
 
 var app = builder.Build();
+
+app.UseResponseCompression();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

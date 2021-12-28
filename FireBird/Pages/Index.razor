@@ -1,0 +1,28 @@
+﻿@page "/"
+@inject DataAccess dataAccess
+@using Dapper
+@using FireBird.Models
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+
+@code{
+    //@DataAccess._connection.ExecuteAsync(sql, parameters);
+    protected override async Task OnInitializedAsync()
+    {
+        //int pk = dataAccess._connection.ExecuteScalar<int>($"select ID from Get_PK");
+
+        //IEnumerable<UuModel> uus = dataAccess._connection.GetAll<UuModel>();
+        dataAccess.Deneme3();
+        //dataAccess.Deneme3();
+        //await dataAccess.Deneme2();
+        //await dataAccess.Deneme2();
+    }
+}
+           
