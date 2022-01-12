@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="DevExpress.Blazor" Version="20.2.4" />
     <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="7.10.1" />
   </ItemGroup>
 

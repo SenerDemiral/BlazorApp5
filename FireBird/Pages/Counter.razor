@@ -2,17 +2,101 @@
 
 <PageTitle>Counter</PageTitle>
 
-<h1>Counter</h1>
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex flex-nowrap gap-2 overflow-auto">
+            @foreach(var d in cmpntDic)
+            {
+                <div @key="d.Key" class="btn-group" >
+   
+                    <button class="@d.Value.TabClass" style="max-width:100px" @onclick="() => TabSelect(d.Key)">@d.Value.CmpntName</button>
+                    <button class="btn btn-outline-secondary btn-sm " @onclick="() => TabRemove(d.Key)">x</button>
 
-<p role="status">Current count: @currentCount</p>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+        @foreach(var d in cmpntDic)
+        {
+            <div class="@d.Value.CmpntClass">
+                <DynamicComponent @key="d.Key" Type="@d.Value.CmpntType" Parameters="d.Value.CmpntParams"/>
+            </div>
+        }
+    </div>
+</div>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+
 
 @code {
-    private int currentCount = 0;
+    //<DynamicComponent @key="d.Key" Type="@Type.GetType("FireBird.Pages."+d.Value.CmpntName)" Parameters="d.Value.CmpntParams"/>
 
-    private void IncrementCount()
+    private int currentCount = 0;
+    private int curKey = 0;
+
+    private Dictionary<int, Cmpnt> cmpntDic = new();
+
+    private void IncrementCount(MouseEventArgs e)
     {
         currentCount++;
+    }
+
+    private void TabSelect(int tabKey)
+    {
+        if(tabKey != curKey)
+        {
+            cmpntDic[curKey].CmpntClass = "d-none";
+            cmpntDic[curKey].TabClass = "btn btn-outline-primary btn-sm";
+            curKey = tabKey;
+        }
+        cmpntDic[tabKey].CmpntClass = "d-block";
+        cmpntDic[tabKey].TabClass = "btn btn-primary btn-sm";
+    }
+
+    private void TabRemove(int tabKey)
+    {
+            cmpntDic[curKey].CmpntClass = "d-none";
+            cmpntDic[curKey].TabClass = "btn btn-outline-primary btn-sm";
+
+        cmpntDic.Remove(tabKey);
+        curKey = cmpntDic.Keys.First();
+        TabSelect(curKey);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        cmpntDic.Add(0, new Cmpnt { CmpntName = "Aa1", CmpntType = typeof(Aa), CmpntParams = new ()
+          {
+            { "P1", "Ooh, no." }
+          } });
+        cmpntDic.Add(1, new Cmpnt { CmpntName = "Bb1", CmpntType = typeof(Bb) });
+        cmpntDic.Add(2, new Cmpnt { CmpntName = "FetchData", CmpntType = typeof(FetchData) });
+
+        cmpntDic.Add(3, new Cmpnt { CmpntName = "Aa2", CmpntType = typeof(Aa) });
+        cmpntDic.Add(4, new Cmpnt { CmpntName = "Bb2", CmpntType = typeof(Bb) });
+        cmpntDic.Add(5, new Cmpnt { CmpntName = "Cc2", CmpntType = typeof(Cc) });
+        
+        cmpntDic.Add(6, new Cmpnt { CmpntName = "Aa3", CmpntType = typeof(Aa) });
+        cmpntDic.Add(7, new Cmpnt { CmpntName = "Bb3", CmpntType = typeof(Bb) });
+        cmpntDic.Add(8, new Cmpnt { CmpntName = "Cc3", CmpntType = typeof(Cc) });
+
+        cmpntDic.Add(9, new Cmpnt { CmpntName = "Aa4", CmpntType = typeof(Aa) });
+        cmpntDic.Add(10, new Cmpnt { CmpntName = "Bb4", CmpntType = typeof(Bb) });
+        cmpntDic.Add(11, new Cmpnt { CmpntName = "Cc4", CmpntType = typeof(Cc) });
+
+        TabSelect(0);
+
+        var selectedType = Type.GetType($"FireBird.Pages.{cmpntDic[0].CmpntName}");
+}
+
+    class Cmpnt
+    {
+        public string CmpntName { get; set; }
+        public Dictionary<string, object> CmpntParams { get; set; }
+        public string Cls { get; set; } = "d-none";
+        public string CmpntClass { get; set; } = "d-none";
+        public string TabClass { get; set; } = "btn btn-outline-primary btn-sm";
+        public Type CmpntType { get; set; }
     }
 }

@@ -1,7 +1,8 @@
 ﻿@page "/"
 @inject DataAccess dataAccess
-@using Dapper
+@*@using Dapper*@
 @using FireBird.Models
+@implements IDisposable
 
 <PageTitle>Index</PageTitle>
 
@@ -11,18 +12,185 @@ Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
+<h2>@ActiveTabIndex</h2> 
+<DxTabs  @bind-ActiveTabIndex="@ActiveTabIndex">
+        @foreach(var d in dt)
+        {
+            <DxTab Text="@d.Key.ToString()" @key="d.Key">
+            </DxTab> 
+        }
+    </DxTabs>
 
-@code{
+
+
+<DxComboBox Data="@uu"
+            ListRenderMode="ListRenderMode.Virtual"
+            FilteringMode="DataGridFilteringMode.Contains"
+            TextFieldName="@nameof(UUmodel.AdN)"
+            ValueFieldName="@nameof(UUmodel.FrtID)"
+            @bind-Value="@SelectedValue"
+            CssClass="cw-480" >
+    <DxListEditorColumn FieldName="@nameof(UUmodel.FrtID)"
+                        Caption="Id"
+                        Width="50px" />
+    <DxListEditorColumn FieldName="@nameof(UUmodel.AdN)"
+                        Caption="Name" />
+    <DxListEditorColumn FieldName="@nameof(UUmodel.Ad)"
+                        Caption="Surname" />
+</DxComboBox>
+<p class="demo-text cw-480 mt-2">
+    Selected item: <b>@(SelectedValue != null ? SelectedValue : "null")</b>
+</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Toggle me</button>
+
+
+@if (true)
+{
+
+    @*int i = 0;
+        @foreach (var item in uu)
+        {
+        <div>@item</div>
+        i++;
+        if (i > 10)
+        break;
+        }*@
+    <div>
+        @for(int i=0; i<1; i++)
+        {
+            
+        <DxDataGrid Data="@uu"
+                        KeyFieldName="FrtID"
+                        ShowPager="true"
+                        PagerNavigationMode="PagerNavigationMode.InputBox"
+                        PagerPageSizeSelectorVisible="true"
+                        PagerAllDataRowsItemVisible="false"
+                        ShowGroupPanel="true"
+                        ShowDetailRow="true"
+                        ShowFilterRow="true"
+                        PageSize="10"
+                        CssClass="@visible"
+             
+                        PagerAllowedPageSizes=@(new int[] {2,10,20,40,100,1000})>
+                <DxDataGridColumn 
+                                Field="@nameof(UUmodel.FrtID)" 
+                                Caption="ID"
+				                Width="6em"
+				                TextAlignment="DataGridTextAlign.Center" />
+                <DxDataGridColumn Field="@nameof(UUmodel.AdN)" />
+                <DxDataGridColumn Field="@nameof(UUmodel.Ad)" />
+            </DxDataGrid>
+        }
+
+    </div>
+}
+<div class="col-4">
+    What is your current living situation?
+    <select class="form-control" @onchange="OnDropdownChange">
+        <option value="@nameof(Empty)">Empty</option>
+        <option value="@nameof(Counter)">Counter</option>
+        <option value="@nameof(FetchData)">FetchData</option>
+        <option value="@nameof(Index)">Index</option>
+    </select>
+</div>
+
+<DynamicComponent Type="selectedType" />
+<hr />
+@*@foreach(var i in lt)
+{
+    <DynamicComponent Type="i" />
+}*@
+
+@foreach(var d in dt)
+{
+    <hr />
+    <div >@d.Key</div>
+    <DynamicComponent Type="d.Value" @key="d.Key"/>
+}
+
+@code {
+    public int ActiveTabIndex { get; set; } = 1;
+    List<Type> lt = new();
+    Dictionary<int, Type> dt = new();
+
+    //Type[] Types = new() {}
+    Type selectedType = typeof(Empty);
+    Type selectedType2 = typeof(Counter);
+
+    public void OnDropdownChange(ChangeEventArgs myArgs)
+    {
+        var aaa = $"FireBird.Pages.{myArgs.Value}";
+        selectedType = Type.GetType(aaa);
+
+        lt.Remove(typeof(Counter));
+
+    }
+
+
+    string visible = "d-none";
+    //@(dataAccess.Deneme3Cache())
     //@DataAccess._connection.ExecuteAsync(sql, parameters);
+    protected IEnumerable<UUmodel> uu;
+
+    //UUmodel SelectedValue { get; set; }
+    int? SelectedValue { get; set; }
+
+    private void IncrementCount()
+    {
+        if (visible == "")
+            visible = "d-none";
+        else
+            visible = "";
+
+        //lt.Add(typeof(Counter));
+        dt.Remove(0);
+    }
+
     protected override async Task OnInitializedAsync()
     {
         //int pk = dataAccess._connection.ExecuteScalar<int>($"select ID from Get_PK");
 
         //IEnumerable<UuModel> uus = dataAccess._connection.GetAll<UuModel>();
-        dataAccess.Deneme3();
+        //uu = await dataAccess.Deneme2();
+        uu = dataAccess.Deneme3Cache();
+        //SelectedValue = uu.FirstOrDefault();
         //dataAccess.Deneme3();
+
         //await dataAccess.Deneme2();
         //await dataAccess.Deneme2();
+
+        dt.Add(0, typeof(Aa));
+        dt.Add(1, typeof(Bb));
+        dt.Add(2, typeof(Cc));
+
+        //Dictionary<int, Deneme> dd = new();
+        //dd.Add(0, new Deneme { bir = 1, iki = 2 });
+        //dd.Add(1, new Deneme { bir = 10, iki = 20 });
+        //dd[0].bir;
+        //foreach(var d in dd)
+        //{
+        //    var aaa = d.Value.bir;
+        //}
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Console.WriteLine("OnAfterRenderAsync..bgn " + firstRender);
+        await base.OnAfterRenderAsync(firstRender);
+        Console.WriteLine("OnAfterRenderAsync..end " + firstRender);
+    }
+
+    public void Dispose()
+    {
+        //uu = null;
+    }
+
+    public class Deneme
+    {
+        public int bir;
+        public int iki;
     }
 }
-           
+

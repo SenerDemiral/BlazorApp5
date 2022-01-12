@@ -1,0 +1,13 @@
+﻿@implements IDisposable
+
+<h3>@P1 - Aa @DateTime.Now.ToString()</h3>
+
+@code {
+    [Parameter]
+    public string P1 { get; set; }
+
+    public void Dispose()
+        {
+            //uu = null;
+        }
+}

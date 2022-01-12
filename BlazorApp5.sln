@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MudBlazorApp", "MudBlazorAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevExpApp", "DevExpApp\DevExpApp.csproj", "{008CB7A7-6FE6-43F2-BF66-ED5B811C849D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireBird", "FireBird\FireBird.csproj", "{74EB7EE7-9586-4374-B253-B78DAB8E8402}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireBird", "FireBird\FireBird.csproj", "{74EB7EE7-9586-4374-B253-B78DAB8E8402}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bootstrap5", "Bootstrap5\Bootstrap5.csproj", "{C3E9F5DC-F4A5-430F-9DB7-2F0E0CC4DD3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{74EB7EE7-9586-4374-B253-B78DAB8E8402}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74EB7EE7-9586-4374-B253-B78DAB8E8402}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74EB7EE7-9586-4374-B253-B78DAB8E8402}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3E9F5DC-F4A5-430F-9DB7-2F0E0CC4DD3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3E9F5DC-F4A5-430F-9DB7-2F0E0CC4DD3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3E9F5DC-F4A5-430F-9DB7-2F0E0CC4DD3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3E9F5DC-F4A5-430F-9DB7-2F0E0CC4DD3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
