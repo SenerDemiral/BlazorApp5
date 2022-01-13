@@ -9,7 +9,7 @@
             {
                 <div @key="d.Key" class="btn-group" >
    
-                    <button class="@d.Value.TabClass" style="max-width:100px" @onclick="() => TabSelect(d.Key)">@d.Value.CmpntName</button>
+                    <button class="@d.Value.TabClass" style="max-width:100px" @onclick="() => TabSelect(d.Key)">@d.Value.Text</button>
                     <button class="btn btn-outline-secondary btn-sm " @onclick="() => TabRemove(d.Key)">x</button>
 
                 </div>
@@ -17,12 +17,14 @@
         </div>
     </div>
     <div class="card-body">
-        @foreach(var d in cmpntDic)
-        {
-            <div class="@d.Value.CmpntClass">
-                <DynamicComponent @key="d.Key" Type="@d.Value.CmpntType" Parameters="d.Value.CmpntParams"/>
-            </div>
-        }
+        <CascadingValue Value=this>
+            @foreach(var d in cmpntDic)
+            {
+                <div class="@d.Value.Class">
+                    <DynamicComponent @key="d.Key" Type="@d.Value.Type" Parameters="d.Value.Params"/>
+                </div>
+            }
+        </CascadingValue>
     </div>
 </div>
 
@@ -34,8 +36,9 @@
 
     private int currentCount = 0;
     private int curKey = 0;
+    private int key = 0;
 
-    private Dictionary<int, Cmpnt> cmpntDic = new();
+    public Dictionary<int, Cmpnt> cmpntDic = new();
 
     private void IncrementCount(MouseEventArgs e)
     {
@@ -46,57 +49,67 @@
     {
         if(tabKey != curKey)
         {
-            cmpntDic[curKey].CmpntClass = "d-none";
+            cmpntDic[curKey].Class = "d-none";
             cmpntDic[curKey].TabClass = "btn btn-outline-primary btn-sm";
             curKey = tabKey;
         }
-        cmpntDic[tabKey].CmpntClass = "d-block";
+        cmpntDic[tabKey].Class = "d-block";
         cmpntDic[tabKey].TabClass = "btn btn-primary btn-sm";
     }
 
     private void TabRemove(int tabKey)
     {
-            cmpntDic[curKey].CmpntClass = "d-none";
-            cmpntDic[curKey].TabClass = "btn btn-outline-primary btn-sm";
+        cmpntDic[curKey].Class = "d-none";
+        cmpntDic[curKey].TabClass = "btn btn-outline-primary btn-sm";
 
         cmpntDic.Remove(tabKey);
         curKey = cmpntDic.Keys.First();
         TabSelect(curKey);
     }
 
+    public int AddDynComp(string text, Type type, Dictionary<string, object> prms)
+    {
+        key++;
+        cmpntDic.Add(key, new Cmpnt { Text = text, Type = type, Params = prms });
+        TabSelect(key);
+        StateHasChanged();
+
+        return key;
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        cmpntDic.Add(0, new Cmpnt { CmpntName = "Aa1", CmpntType = typeof(Aa), CmpntParams = new ()
+        cmpntDic.Add(key++, new Cmpnt { Text = "Aa1", Type = typeof(Aa), Params = new ()
           {
-            { "P1", "Ooh, no." }
+            { "P1", "Ooh, no." },
+            { "P2", "Ooh, yes." }
           } });
-        cmpntDic.Add(1, new Cmpnt { CmpntName = "Bb1", CmpntType = typeof(Bb) });
-        cmpntDic.Add(2, new Cmpnt { CmpntName = "FetchData", CmpntType = typeof(FetchData) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Bb1", Type = typeof(Bb) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "FetchData", Type = typeof(FetchData) });
 
-        cmpntDic.Add(3, new Cmpnt { CmpntName = "Aa2", CmpntType = typeof(Aa) });
-        cmpntDic.Add(4, new Cmpnt { CmpntName = "Bb2", CmpntType = typeof(Bb) });
-        cmpntDic.Add(5, new Cmpnt { CmpntName = "Cc2", CmpntType = typeof(Cc) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Aa2", Type = typeof(Aa) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Bb2", Type = typeof(Bb) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Cc2", Type = typeof(Cc) });
         
-        cmpntDic.Add(6, new Cmpnt { CmpntName = "Aa3", CmpntType = typeof(Aa) });
-        cmpntDic.Add(7, new Cmpnt { CmpntName = "Bb3", CmpntType = typeof(Bb) });
-        cmpntDic.Add(8, new Cmpnt { CmpntName = "Cc3", CmpntType = typeof(Cc) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Aa3", Type = typeof(Aa) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Bb3", Type = typeof(Bb) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Cc3", Type = typeof(Cc) });
 
-        cmpntDic.Add(9, new Cmpnt { CmpntName = "Aa4", CmpntType = typeof(Aa) });
-        cmpntDic.Add(10, new Cmpnt { CmpntName = "Bb4", CmpntType = typeof(Bb) });
-        cmpntDic.Add(11, new Cmpnt { CmpntName = "Cc4", CmpntType = typeof(Cc) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Aa4", Type = typeof(Aa) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Bb4", Type = typeof(Bb) });
+        cmpntDic.Add(key++, new Cmpnt { Text = "Index", Type = typeof(Index) });
 
         TabSelect(0);
 
-        var selectedType = Type.GetType($"FireBird.Pages.{cmpntDic[0].CmpntName}");
+        var selectedType = Type.GetType($"FireBird.Pages.{cmpntDic[0].Text}");
 }
 
-    class Cmpnt
+    public class Cmpnt
     {
-        public string CmpntName { get; set; }
-        public Dictionary<string, object> CmpntParams { get; set; }
-        public string Cls { get; set; } = "d-none";
-        public string CmpntClass { get; set; } = "d-none";
+        public string Text { get; set; }
+        public Type Type { get; set; }
+        public Dictionary<string, object> Params { get; set; }
+        public string Class { get; set; } = "d-none";
         public string TabClass { get; set; } = "btn btn-outline-primary btn-sm";
-        public Type CmpntType { get; set; }
     }
 }
