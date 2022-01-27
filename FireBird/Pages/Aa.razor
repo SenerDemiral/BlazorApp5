@@ -3,6 +3,7 @@
 <h3>@P1/@P2 - Aa @DateTime.Now.ToString()</h3>
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+
 @code {
     [Parameter] public string P1 { get; set; }
     [Parameter] public string P2 { get; set; }
@@ -10,13 +11,16 @@
 
     private void IncrementCount()
     {
-        //Main.cmpntDic.Add(99, new Counter.Cmpnt { Text = "Bb99", Type = typeof(Bb) });
-
-        Main.AddDynComp("Aa99", typeof(Aa), new Dictionary<string, object>()
+        Main.AddDynCmp("Aa99", typeof(Aa), new Dictionary<string, object>()
             {
                 {"P1", "Abidik" },
                 {"P2", "Gubidik"}
             });
+    }
+
+    protected override void OnInitialized()
+    {
+        
     }
 
     public void Dispose()
