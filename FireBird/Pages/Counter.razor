@@ -8,7 +8,7 @@
         {
             <div @key="d.Key" class="btn-group flex-grow-1">
 
-                <button class="@d.Value.TabClass" @onclick="() => TabSelect(d.Key)">@d.Value.Text</button>
+                <button class="@d.Value.TabClass" style="box-shadow:none" @onclick="() => TabSelect(d.Key)">@d.Value.Text</button>
                 <button class="btn btn-outline-secondary btn-sm flex-grow-0" @onclick="() => TabRemove(d.Key)">x</button>
 
             </div>
@@ -25,7 +25,6 @@
         </CascadingValue>
     </div>
 </div>
-
 
 
 

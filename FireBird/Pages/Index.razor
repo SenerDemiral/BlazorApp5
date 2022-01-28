@@ -13,14 +13,14 @@ Welcome to your new app.
 <SurveyPrompt Title="How is Blazor working for you?" />
 
 <h2>@ActiveTabIndex</h2> 
-<DxTabs  @bind-ActiveTabIndex="@ActiveTabIndex">
+@*<DxTabs  @bind-ActiveTabIndex="@ActiveTabIndex">
         @foreach(var d in dt)
         {
             <DxTab Text="@d.Key.ToString()" @key="d.Key">
             </DxTab> 
         }
     </DxTabs>
-
+*@
 
 
 <DxComboBox Data="@uu"
@@ -34,15 +34,16 @@ Welcome to your new app.
                         Caption="Id"
                         Width="50px" />
     <DxListEditorColumn FieldName="@nameof(UUmodel.AdN)"
-                        Caption="Name" />
+                        Caption="Nick" />
     <DxListEditorColumn FieldName="@nameof(UUmodel.Ad)"
-                        Caption="Surname" />
+                        Caption="Name" />
 </DxComboBox>
+
 <p class="demo-text cw-480 mt-2">
     Selected item: <b>@(SelectedValue != null ? SelectedValue : "null")</b>
 </p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Toggle me</button>
+<button class="btn btn-primary btn-sm" @onclick="IncrementCount">Toggle me</button>
 
 
 @if (true)
@@ -104,9 +105,9 @@ Welcome to your new app.
 
 @foreach(var d in dt)
 {
-    <hr />
+   @* <hr />
     <div >@d.Key</div>
-    <DynamicComponent Type="d.Value" @key="d.Key"/>
+    <DynamicComponent Type="d.Value" @key="d.Key"/>*@
 }
 
 @code {
