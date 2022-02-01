@@ -9,7 +9,7 @@
             <div @key="d.Key" class="btn-group flex-grow-1">
 
                 <button class="@d.Value.TabClass" style="box-shadow:none" @onclick="() => TabSelect(d.Key)">@d.Value.Text</button>
-                <button class="btn btn-outline-secondary btn-sm flex-grow-0" @onclick="() => TabRemove(d.Key)">x</button>
+                <button class="btn btn-outline-danger btn-sm flex-grow-0" style="box-shadow:none" @onclick="() => TabRemove(d.Key)">x</button>
 
             </div>
         }
@@ -47,11 +47,11 @@
         if (tabKey != curKey)
         {
             cmpDic[curKey].CmpClass = "d-none";
-            cmpDic[curKey].TabClass = "btn btn-outline-primary btn-sm";
+            cmpDic[curKey].TabClass = "btn btn-outline-success btn-sm";
             curKey = tabKey;
         }
         cmpDic[tabKey].CmpClass = "d-block";
-        cmpDic[tabKey].TabClass = "btn btn-primary btn-sm";
+        cmpDic[tabKey].TabClass = "btn btn-success btn-sm";
     }
 
     private void TabRemove(int tabKey)
@@ -63,8 +63,8 @@
         }
         else
         {
-            cmpDic[curKey].CmpClass = "d-none";
-            cmpDic[curKey].TabClass = "btn btn-outline-primary btn-sm";
+            //cmpDic[curKey].CmpClass = "d-none";
+            //cmpDic[curKey].TabClass = "btn btn-outline-danger btn-sm";
 
             cmpDic.Remove(tabKey);
             curKey = cmpDic.Keys.First();
@@ -99,20 +99,6 @@
         //    { "P1", "Ooh, no." },
         //    { "P2", "Ooh, yes." }
         //  } });
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Bb1", Type = typeof(Bb) });
-        //cmpntDic.Add(key++, new Cmpnt { Text = "FetchData", Type = typeof(FetchData) });
-
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Aa2", Type = typeof(Aa) });
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Bb2", Type = typeof(Bb) });
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Cc2", Type = typeof(Cc) });
-
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Aa3", Type = typeof(Aa) });
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Bb3", Type = typeof(Bb) });
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Cc3", Type = typeof(Cc) });
-
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Aa4", Type = typeof(Aa) });
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Bb4", Type = typeof(Bb) });
-        //cmpntDic.Add(key++, new Cmpnt { Text = "Index", Type = typeof(Index) });
 
         TabSelect(0);
 
@@ -125,6 +111,6 @@
         public Type CmpType { get; set; }
         public Dictionary<string, object> Params { get; set; }
         public string CmpClass { get; set; } = "d-none";
-        public string TabClass { get; set; } = "btn btn-outline-primary btn-sm";
+        public string TabClass { get; set; } = "btn btn-outline-success btn-sm";
     }
 }

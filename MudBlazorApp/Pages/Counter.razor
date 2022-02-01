@@ -2,7 +2,7 @@
 
 <MudDynamicTabs 
 	@ref="mdt"
-	Elevation="4" 
+	Elevation="8" 
 	Rounded="true" 
 	ApplyEffectsToContainer="false" 
 	DisableRipple="false"
@@ -10,7 +10,7 @@
 	Outlined="false"
 	AddTab="AddTabCallback" 
 	CloseTab="@((panel) => CloseTabCallback(panel))" 
-	PanelClass="px-4 py-6"
+	PanelClass="py-6"
 	@bind-ActivePanelIndex="_index"
 	AddIconToolTip="Click here to add a new tab" 
 	CloseIconToolTip="Close this tab. All data will be lost"

@@ -12,8 +12,8 @@ Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
-<h2>@ActiveTabIndex</h2> 
-@*<DxTabs  @bind-ActiveTabIndex="@ActiveTabIndex">
+@*<h2>@ActiveTabIndex</h2> 
+<DxTabs  @bind-ActiveTabIndex="@ActiveTabIndex">
         @foreach(var d in dt)
         {
             <DxTab Text="@d.Key.ToString()" @key="d.Key">
@@ -97,18 +97,17 @@ Welcome to your new app.
 </div>
 
 <DynamicComponent Type="selectedType" />
-<hr />
 @*@foreach(var i in lt)
 {
     <DynamicComponent Type="i" />
 }*@
 
-@foreach(var d in dt)
+@*@foreach(var d in dt)
 {
-   @* <hr />
+   <hr />
     <div >@d.Key</div>
-    <DynamicComponent Type="d.Value" @key="d.Key"/>*@
-}
+    <DynamicComponent Type="d.Value" @key="d.Key"/>
+}*@
 
 @code {
     public int ActiveTabIndex { get; set; } = 1;

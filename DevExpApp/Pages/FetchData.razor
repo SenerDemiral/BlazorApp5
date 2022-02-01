@@ -15,16 +15,17 @@
 }
 else
 {
+
     <table class="table">
         <thead>
-            <tr>
+            <tr  @oncontextmenu="((e) => ContextMenu2.Show(e))"  @oncontextmenu:preventDefault>
                 <th>Date</th>
                 <th>Temp. (C)</th>
                 <th>Temp. (F)</th>
                 <th>Summary</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody @oncontextmenu="((e) => ContextMenu1.Show(e))" @oncontextmenu:preventDefault>
             @foreach (var forecast in forecasts)
             {
                 <tr>
@@ -36,6 +37,44 @@ else
             }
         </tbody>
     </table>
+
+}
+
+<div class="dxbs-preventsel target-container" @oncontextmenu="((e) => ContextMenu1.Show(e))" @oncontextmenu:preventDefault>
+    <p class="target-caption">RIGHT-CLICK OR LONG PRESS TO SHOW THE CONTEXT MENU</p>
+    <p class="demo-text">Clicked item: <b>@(ClickedItem != null ? ClickedItem : "None")</b></p>
+</div>
+<DxContextMenu @ref="@ContextMenu1" ItemClick="@OnItemClick">
+    <Items>
+        <DxContextMenuItem Text="Sort By" IconCssClass="menu-icon-sort-by menu-icon">
+            <Items>
+                <DxContextMenuItem Text="Name"></DxContextMenuItem>
+                <DxContextMenuItem Text="Size"></DxContextMenuItem>
+                <DxContextMenuItem Text="Type"></DxContextMenuItem>
+            </Items>
+        </DxContextMenuItem>
+        <DxContextMenuItem Text="Copy" IconCssClass="menu-icon-copy menu-icon" BeginGroup="true"></DxContextMenuItem>
+        <DxContextMenuItem Text="Cut" IconCssClass="menu-icon-cut menu-icon"></DxContextMenuItem>
+        <DxContextMenuItem Text="Remove" IconCssClass="menu-icon-clear menu-icon"></DxContextMenuItem>
+        <DxContextMenuItem Text="Select All" BeginGroup="true"></DxContextMenuItem>
+    </Items>
+</DxContextMenu>
+
+<DxContextMenu @ref="@ContextMenu2" ItemClick="@OnItemClick">
+    <Items>
+        <DxContextMenuItem Text="Copy" IconCssClass="menu-icon-copy menu-icon" BeginGroup="true"></DxContextMenuItem>
+        <DxContextMenuItem Text="Cut" IconCssClass="menu-icon-cut menu-icon"></DxContextMenuItem>
+        <DxContextMenuItem Text="Remove" IconCssClass="menu-icon-clear menu-icon"></DxContextMenuItem>
+    </Items>
+</DxContextMenu>
+
+@code {
+    DxContextMenu ContextMenu1 { get; set; }
+    DxContextMenu ContextMenu2 { get; set; }
+    string ClickedItem { get; set; }
+    void OnItemClick(ContextMenuItemClickEventArgs args) {
+        ClickedItem = args.ItemInfo.Text;
+    }
 }
 
 @code {
